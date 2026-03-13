@@ -11,14 +11,21 @@ class TestLogin:
     # -----------------
     # SAD PATH
     # -----------------
-    def test_unknown_email_returns_error_message(self, mock_client):
+
+    @pytest.mark.parametrize("email", [
+        "unknown@notfound.com",
+        "",
+        "notanemail",
+    ])
+    def test_invalid_email_returns_error_message(self, mock_client, email):
         """
-        An unknown email should return 200 with a clear error
-        message instead of crashing with IndexError 500.
+        Any email that does not match a club in the database
+        should return 200 with a graceful error message — not crash.
+        Covers unknown, empty, and malformed email inputs.
         """
         response = mock_client.post(
             '/showSummary',
-            data={'email': 'unknown@notfound.com'}
+            data={'email': email}
         )
         assert response.status_code == 200
         assert b"Sorry, that email was not found." in response.data
@@ -38,19 +45,3 @@ class TestLogin:
         )
         assert response.status_code == 200
         assert b"Welcome" in response.data
-
-    # -----------------
-    # EDGE CASE
-    # -----------------
-
-    def test_empty_email_returns_error_message(self, mock_client):
-        """
-        An empty email submission should return 200 with an
-        error message rather than crashing or returning a server error.
-        """
-        response = mock_client.post(
-            '/showSummary',
-            data={'email': ''}
-        )
-        assert response.status_code == 200
-        assert b"Sorry, that email was not found." in response.data
