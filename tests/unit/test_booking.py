@@ -122,3 +122,20 @@ class TestClubPoints:
             (c for c in server.clubs if c['name'] == 'Simply Lift'), None
         )
         assert int(club['points']) == 10
+
+    # -----------------
+    # SAD PATH
+    # -----------------
+
+    @pytest.mark.parametrize("places_requested", [14, 20, 100])
+    def test_booking_blocked_when_points_insufficient(
+            self, make_booking, places_requested
+    ):
+        """
+        Booking must be rejected whenever requested places
+        exceed the club's available points.
+        """
+        response = make_booking("Future Festival", "Simply Lift", places_requested)
+
+        assert response.status_code == 200
+        assert b"insufficient points." in response.data.lower()
