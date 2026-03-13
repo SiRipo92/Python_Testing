@@ -38,3 +38,18 @@ class TestLogin:
         )
         assert response.status_code == 200
         assert b"Welcome" in response.data
+
+    # -----------------
+    # EDGE CASE
+    # -----------------
+    def test_empty_email_returns_error_message(self, client_with_mock_data):
+        """
+        An empty email submission should return 200 with an
+        error message rather than crashing or returning a server error.
+        """
+        response = client_with_mock_data.post(
+            '/showSummary',
+            data={'email': ''}
+        )
+        assert response.status_code == 200
+        assert b"Sorry, that email was not found." in response.data
