@@ -126,4 +126,4 @@ class TestClubPoints:
         response = make_booking("Future Festival", "Simply Lift", places_requested)
 
         assert response.status_code == 200
-        assert b"insufficient points." in response.data
+        assert b"Insufficient points." in response.data
