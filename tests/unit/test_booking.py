@@ -51,12 +51,18 @@ class TestPurchasePlaces:
     # SAD PATH
     # -----------------
 
-    # def test_unknown_competition_returns_error(self, mock_client):
-        # """
-        # If the competition name is not found, the app should
-        # return an error message without crashing.
-        # """
-        # pass
+    def test_unknown_competition_returns_error(self, mock_client):
+        """
+        If the competition name is not found, the app should
+        return an error message without crashing.
+        """
+        response = mock_client.post('/purchasePlaces', data={
+            'competition': 'Unknown Competition',
+            'club': 'Simply Lift',
+            'places': '3',
+        })
+        assert response.status_code == 200
+        assert b'Something went wrong' in response.data
 
     # def test_unknown_club_returns_error(self, mock_client):
         # """
