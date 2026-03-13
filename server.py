@@ -53,8 +53,8 @@ def purchasePlaces():
         flash('Something went wrong - please try again.')
         return render_template('welcome.html', club=club, competitions=competitions), 200
 
-    placesRequired = int(request.form['places'])
-    competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
+    places_required = int(request.form['places'])
+    competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - places_required
     flash('Great-booking complete!')
     return render_template('welcome.html', club=club, competitions=competitions)
 
