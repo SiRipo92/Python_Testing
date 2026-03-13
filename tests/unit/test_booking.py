@@ -85,16 +85,17 @@ class TestPurchasePlaces:
         assert isinstance(competition['numberOfPlaces'], int)
         assert competition['numberOfPlaces'] == 22
 
-
-class TestClubPoints:
+class TestPurchaseValidation:
     """
-    Unit tests for club point deduction in purchasePlaces().
+    Unit tests for all validation rules in purchase_places().
 
-    Issue #8: Club point balance is not updated after booking.
-    Branch: fix/club-points-not-deducted
+    Covers issues #3, #4, #10 — the three conditions that must ALL
+    pass before a booking is confirmed:
+    1. Places requested must not exceed club's available points (Issue #3)
+    2. Places requested must not exceed 12 (Issue #4)
+    3. Places requested must not exceed competition's available places (Issue #10)
 
-    Verifies that points are correctly deducted from the club's
-    balance after a successful booking and reflected in the UI.
+    Branch: fix/purchasing-exceeds-12-places (and subsequent branches)
     """
 
     # -----------------
@@ -111,19 +112,44 @@ class TestClubPoints:
         club = get_club('Simply Lift')
         assert int(club['points']) == 10
 
+    @pytest.mark.parametrize("places_requested", [12, 11])
+    def test_booking_allowed_at_or_below_12_places(self, make_booking, places_requested):
+        """
+        Booking must be confirmed when places requested
+        are at or below the 12-place maximum.
+        Boundary values: 12 (exactly at limit), 11 (one below).
+        She Lifts has 12 points — sufficient for both scenarios.
+        """
+        response = make_booking("Future Classic", "She Lifts", places_requested)
+        assert response.status_code == 200
+        assert b"Great-booking complete!" in response.data
+
     # -----------------
     # SAD PATH
     # -----------------
 
-    @pytest.mark.parametrize("places_requested", [14, 20, 100])
+    @pytest.mark.parametrize("places_requested", [5, 8, 10])
     def test_booking_blocked_when_points_insufficient(
             self, make_booking, places_requested
     ):
         """
-        Booking must be rejected whenever requested places
-        exceed the club's available points.
+        Booking must be rejected when requested places exceed the club's
+        available points AND are within the 12-place cap.
+        Iron Temple has 4 points. Values 5, 8, 10 are all < 12 but exceed 4.
         """
-        response = make_booking("Future Festival", "Simply Lift", places_requested)
+        response = make_booking("Future Festival", "Iron Temple", places_requested)
 
         assert response.status_code == 200
         assert b"Insufficient points." in response.data
+
+    # Tests ONLY the 12-place cap — She Lifts has 12 points so points check won't fire for ≤ 12
+    @pytest.mark.parametrize("places_requested", [13, 20, 100])
+    def test_booking_blocked_when_exceeds_12_places(self, make_booking, places_requested):
+        """
+        Booking must be blocked when places requested exceed
+        the 12-place maximum, regardless of points available.
+        Boundary values: 13 (one above), 20, 100 (well above).
+        """
+        response = make_booking("Future Classic", "She Lifts", places_requested)
+        assert response.status_code == 200
+        assert b"Cannot book more than 12 places." in response.data
