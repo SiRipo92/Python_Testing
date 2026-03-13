@@ -80,12 +80,10 @@ def client():
         yield client
 
 @pytest.fixture
-def client_with_mock_data(client, mock_clubs, mock_competitions, monkeypatch):
+def mock_client(client, mock_clubs, mock_competitions, monkeypatch):
     """
-    Provides a Flask test client with fully isolated mock data injected
-    via monkeypatch. Never reads from or writes to clubs.json or
-    competitions.json. Use this fixture for all unit and integration tests
-    to ensure test isolation and repeatable results.
+    Flask test client with fully isolated mock data injected via monkeypatch.
+    Use this in all unit and integration tests to ensure test isolation.
     """
     monkeypatch.setattr(server, 'clubs', mock_clubs)
     monkeypatch.setattr(server, 'competitions', mock_competitions)

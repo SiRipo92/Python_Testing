@@ -11,12 +11,12 @@ class TestLogin:
     # -----------------
     # SAD PATH
     # -----------------
-    def test_unknown_email_returns_error_message(self, client_with_mock_data):
+    def test_unknown_email_returns_error_message(self, mock_client):
         """
         An unknown email should return 200 with a clear error
         message instead of crashing with IndexError 500.
         """
-        response = client_with_mock_data.post(
+        response = mock_client.post(
             '/showSummary',
             data={'email': 'unknown@notfound.com'}
         )
@@ -27,12 +27,12 @@ class TestLogin:
     # HAPPY PATH
     # -----------------
 
-    def test_valid_email_loads_summary_page(self, client_with_mock_data):
+    def test_valid_email_loads_summary_page(self, mock_client):
         """
         A valid email should load the summary/welcome page
         and display the club's name.
         """
-        response = client_with_mock_data.post(
+        response = mock_client.post(
             '/showSummary',
             data={'email': 'john@simplylift.co'}
         )
@@ -42,12 +42,13 @@ class TestLogin:
     # -----------------
     # EDGE CASE
     # -----------------
-    def test_empty_email_returns_error_message(self, client_with_mock_data):
+
+    def test_empty_email_returns_error_message(self, mock_client):
         """
         An empty email submission should return 200 with an
         error message rather than crashing or returning a server error.
         """
-        response = client_with_mock_data.post(
+        response = mock_client.post(
             '/showSummary',
             data={'email': ''}
         )
