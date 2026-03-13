@@ -1,0 +1,62 @@
+name: Improvement
+description: Code quality, style, or non-breaking enhancement
+labels: ["improvement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template for refactoring, PEP8 compliance, or any improvement that doesn't fix a bug or add a feature.
+
+  - type: textarea
+    id: given
+    attributes:
+      label: Given
+      description: What is the current state of the code?
+      placeholder: "e.g. Function and variable names use camelCase throughout server.py"
+    validations:
+      required: true
+
+  - type: textarea
+    id: when
+    attributes:
+      label: When
+      description: When is this a problem?
+      placeholder: "e.g. Another developer reads the code or a linter is run"
+    validations:
+      required: true
+
+  - type: textarea
+    id: then
+    attributes:
+      label: Then (current behavior)
+      description: What is the current undesirable outcome?
+      placeholder: "e.g. The code violates PEP8 naming conventions"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should the improved code look like?
+      placeholder: "e.g. All functions and variables renamed to snake_case per PEP8"
+    validations:
+      required: true
+
+  - type: textarea
+    id: relevant_code
+    attributes:
+      label: Relevant code / route
+      description: Which parts of the codebase are affected?
+      placeholder: "e.g. loadClubs → load_clubs, listOfClubs → list_of_clubs in server.py"
+    validations:
+      required: false
+
+  - type: input
+    id: branch
+    attributes:
+      label: Branch name
+      description: Follow the naming convention
+      placeholder: "improvement/descriptive-name"
+    validations:
+      required: true

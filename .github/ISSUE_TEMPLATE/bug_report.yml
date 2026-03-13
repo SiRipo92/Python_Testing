@@ -1,0 +1,62 @@
+name: Bug Report
+description: Report a bug in the application
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please fill in all fields carefully. This helps us reproduce and fix the bug efficiently.
+
+  - type: textarea
+    id: given
+    attributes:
+      label: Given
+      description: What is the initial context or state?
+      placeholder: "e.g. A secretary is logged in and viewing the competition list"
+    validations:
+      required: true
+
+  - type: textarea
+    id: when
+    attributes:
+      label: When
+      description: What action triggers the bug?
+      placeholder: "e.g. They try to book more places than they have points for"
+    validations:
+      required: true
+
+  - type: textarea
+    id: then
+    attributes:
+      label: Then (actual behavior)
+      description: What actually happens?
+      placeholder: "e.g. A confirmation message is shown and points go negative"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should happen instead?
+      placeholder: "e.g. An error message is shown and points remain unchanged"
+    validations:
+      required: true
+
+  - type: textarea
+    id: relevant_code
+    attributes:
+      label: Relevant code / route
+      description: Which function or route is affected?
+      placeholder: "e.g. purchasePlaces() in server.py"
+    validations:
+      required: false
+
+  - type: input
+    id: branch
+    attributes:
+      label: Branch name
+      description: Follow the naming convention
+      placeholder: "fix/descriptive-name"
+    validations:
+      required: true

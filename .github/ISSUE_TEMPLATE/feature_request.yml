@@ -1,0 +1,62 @@
+name: Feature Request
+description: Propose a new feature to implement
+labels: ["feature"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the feature clearly using the Given/When/Then format.
+
+  - type: textarea
+    id: given
+    attributes:
+      label: Given
+      description: What is the context in which this feature is needed?
+      placeholder: "e.g. A secretary is logged into the application"
+    validations:
+      required: true
+
+  - type: textarea
+    id: when
+    attributes:
+      label: When
+      description: What does the user do?
+      placeholder: "e.g. They navigate to the points board page"
+    validations:
+      required: true
+
+  - type: textarea
+    id: then
+    attributes:
+      label: Then (current behavior)
+      description: What currently happens (or doesn't exist yet)?
+      placeholder: "e.g. The page does not exist"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should the feature do?
+      placeholder: "e.g. A public read-only table shows all clubs and their current points balance, no login required"
+    validations:
+      required: true
+
+  - type: textarea
+    id: performance
+    attributes:
+      label: Performance requirements
+      description: Any specific performance constraints?
+      placeholder: "e.g. Page must load in under 5 seconds, updates in under 2 seconds"
+    validations:
+      required: false
+
+  - type: input
+    id: branch
+    attributes:
+      label: Branch name
+      description: Follow the naming convention
+      placeholder: "feature/descriptive-name"
+    validations:
+      required: true
