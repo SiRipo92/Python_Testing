@@ -51,28 +51,19 @@ class TestPurchasePlaces:
     # SAD PATH
     # -----------------
 
-    def test_unknown_competition_returns_error(self, mock_client):
+    @pytest.mark.parametrize("competition,club", [
+        ("Unknown Competition", "Simply Lift"),
+        ("Future Festival", "Unknown Club"),
+    ])
+    def test_invalid_booking_data_returns_error(self, mock_client, competition, club):
         """
-        If the competition name is not found, the app should
-        return an error message without crashing.
-        """
-        response = mock_client.post('/purchasePlaces', data={
-            'competition': 'Unknown Competition',
-            'club': 'Simply Lift',
-            'places': '3',
-        })
-        assert response.status_code == 200
-        assert b'Something went wrong' in response.data
-
-    def test_unknown_club_returns_error(self, mock_client):
-        """
-        If the club name is not found, the app should
-        return an error message without crashing.
+        If either competition or club name is not found,
+        the app should return an error message without crashing.
         """
         response = mock_client.post('/purchasePlaces', data={
-            'competition': 'Future Festival',
-            'club': 'Unknown Club',
-            'places': '3',
+            'competition': competition,
+            'club': club,
+            'places': '3'
         })
         assert response.status_code == 200
         assert b'Something went wrong' in response.data
