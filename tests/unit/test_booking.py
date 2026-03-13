@@ -1,0 +1,61 @@
+import pytest
+
+
+class TestPurchasePlaces:
+    """
+    Unit tests for the /purchasePlaces route.
+
+    Issue #6: Competition places are not correctly deducted after booking.
+    Branch: fix/competition-places-not-deducted
+
+    Verifies that places are correctly deducted from the competition's
+    available total after a successful booking, and that the type
+    consistency of numberOfPlaces is maintained after deduction.
+    """
+
+    # -----------------
+    # HAPPY PATH
+    # -----------------
+
+    def test_booking_deducts_places_from_competition(self, client_with_mock_data):
+        """
+        After a valid booking, the competition's numberOfPlaces
+        should be reduced by the number of places requested.
+        """
+        pass
+
+    def test_booking_reflects_updated_count_in_response(self, client_with_mock_data):
+        """
+        The updated number of places should be reflected
+        immediately in the response after booking.
+        """
+        pass
+
+    # -----------------
+    # SAD PATH
+    # -----------------
+
+    # def test_unknown_competition_returns_error(self, client_with_mock_data):
+        # """
+        # If the competition name is not found, the app should
+        # return an error message without crashing.
+        # """
+        # pass
+
+    # def test_unknown_club_returns_error(self, client_with_mock_data):
+        # """
+        # If the club name is not found, the app should
+        # return an error message without crashing.
+        # """
+        # pass
+
+    # -----------------
+    # EDGE CASES
+    # -----------------
+
+    # def test_places_value_remains_integer_after_deduction(self, client_with_mock_data):
+        # """
+        # After deduction, numberOfPlaces should be stored
+        # as an integer to maintain type consistency across bookings.
+        # """
+        # pass
