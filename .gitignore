@@ -1,7 +1,10 @@
-bin
-include
-lib
+bin/
+include/
+lib/
 .Python
-tests/
 .envrc
-__pycache__
+__pycache__/
+*.pyc
+.coverage
+htmlcov/
+venv/
