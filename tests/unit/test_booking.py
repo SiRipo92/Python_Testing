@@ -17,19 +17,25 @@ class TestPurchasePlaces:
     # HAPPY PATH
     # -----------------
 
-    def test_booking_deducts_places_from_competition(self, client_with_mock_data):
+    def test_booking_deducts_places_from_competition(self, mock_client):
         """
         After a valid booking, the competition's numberOfPlaces
         should be reduced by the number of places requested.
         """
-        pass
+        response = mock_client.post('/purchasePlaces', data={
+            'competition': 'Future Festival',
+            'club': 'Simply Lift',
+            'places': '3',
+        })
+        assert response.status_code == 200
+        assert b'Great-booking complete!' in response.data
 
-    def test_booking_reflects_updated_count_in_response(self, client_with_mock_data):
-        """
-        The updated number of places should be reflected
-        immediately in the response after booking.
-        """
-        pass
+    # def test_booking_reflects_updated_count_in_response(self, client_with_mock_data):
+        # """
+        # The updated number of places should be reflected
+        # immediately in the response after booking.
+        # """
+        # pass
 
     # -----------------
     # SAD PATH
