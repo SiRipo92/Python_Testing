@@ -153,3 +153,18 @@ class TestPurchaseValidation:
         response = make_booking("Future Classic", "She Lifts", places_requested)
         assert response.status_code == 200
         assert b"Cannot book more than 12 places." in response.data
+
+    @pytest.mark.parametrize("places_requested", [2, 5, 10])
+    def test_booking_blocked_when_exceeds_available_places(
+            self, make_booking, places_requested
+    ):
+        """
+        Booking must be blocked when places requested exceed
+        the competition's available places.
+        Almost Full Competition has 1 place. Simply Lift has 13 points.
+        Values 2, 5, 10 all pass the 12-place cap and points check —
+        isolating availability check only.
+        """
+        response = make_booking("Almost Full Competition", "Simply Lift", places_requested)
+        assert response.status_code == 200
+        assert b"Not enough places available." in response.data
