@@ -44,8 +44,8 @@ def book(competition,club):
         return render_template('welcome.html', club=club, competitions=competitions)
 
 
-@app.route('/purchasePlaces',methods=['POST'])
-def purchasePlaces():
+@app.route('/purchasePlaces', methods=['POST'])
+def purchase_places():
     competition = next((c for c in competitions if c['name'] == request.form['competition']), None)
     club = next((c for c in clubs if c['name'] == request.form['club']), None)
 
