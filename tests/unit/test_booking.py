@@ -31,20 +31,14 @@ class TestPurchasePlaces:
         assert response.status_code == 200
         assert b'Great-booking complete!' in response.data
 
-    def test_booking_reflects_updated_count_in_response(self, mock_client):
+    def test_booking_reflects_updated_count_in_response(self, make_booking, get_competition):
         """
         Checks the in-memory state directly.
         The updated number of places should be reflected
         immediately in the response after booking.
         """
-        mock_client.post('/purchasePlaces', data={
-            'competition': 'Future Festival',
-            'club': 'Simply Lift',
-            'places': '3',
-        })
-        competition = next(
-            (c for c in server.competitions if c['name'] == 'Future Festival'), None
-        )
+        make_booking('Future Festival', 'Simply Lift', 3)
+        competition = get_competition('Future Festival')
         assert competition['numberOfPlaces'] == 22
 
     # -----------------
@@ -107,20 +101,14 @@ class TestClubPoints:
     # HAPPY PATH
     # -----------------
 
-    def test_booking_deducts_points_from_club(self, mock_client):
+    def test_booking_deducts_points_from_club(self, make_booking, get_club):
         """
         After a valid booking, the club's points balance
         should be reduced by the number of places reserved.
         Simply Lift starts with 13 points, books 3 places — expects 10.
         """
-        mock_client.post('/purchasePlaces', data={
-            'competition': 'Future Festival',
-            'club': 'Simply Lift',
-            'places': '3'
-        })
-        club = next(
-            (c for c in server.clubs if c['name'] == 'Simply Lift'), None
-        )
+        make_booking('Future Festival', 'Simply Lift', 3)
+        club = get_club('Simply Lift')
         assert int(club['points']) == 10
 
     # -----------------
@@ -138,4 +126,4 @@ class TestClubPoints:
         response = make_booking("Future Festival", "Simply Lift", places_requested)
 
         assert response.status_code == 200
-        assert b"insufficient points." in response.data.lower()
+        assert b"insufficient points." in response.data
