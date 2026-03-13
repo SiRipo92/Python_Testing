@@ -69,6 +69,31 @@ def mock_competitions():
 # --- App fixtures ---
 
 @pytest.fixture
+def get_club():
+    """
+    Returns a callable to look up a club from server state by name.
+    Avoids repeating next() lookups across test files.
+    """
+    def _get_club(name):
+        return next(
+            (c for c in server.clubs if c['name'] == name), None
+        )
+    return _get_club
+
+
+@pytest.fixture
+def get_competition():
+    """
+    Returns a callable to look up a competition from server state by name.
+    Avoids repeating next() lookups across test files.
+    """
+    def _get_competition(name):
+        return next(
+            (c for c in server.competitions if c['name'] == name), None
+        )
+    return _get_competition
+
+@pytest.fixture
 def client():
     """
     Provides a basic Flask test client with TESTING mode enabled.
@@ -92,11 +117,23 @@ def mock_client(client, mock_clubs, mock_competitions, monkeypatch):
 @pytest.fixture
 def make_booking(mock_client):
     """
-    Helper fixture to submit booking requests in tests.
+    Helper fixture that returns a callable for submitting booking requests.
 
-    DRY - (scalablility in testing)
-    Returns a callable so tests can easily perform bookings
-    with different parameters without repeating request code.
+    Depends on mock_client — mock data is automatically injected, meaning
+    tests using this fixture never touch clubs.json or competitions.json.
+
+    Usage:
+        def test_something(self, make_booking):
+            response = make_booking('Future Festival', 'Simply Lift', 3)
+            assert response.status_code == 200
+
+    Args:
+        competition (str): Name of the competition to book
+        club (str): Name of the club making the booking
+        places (int): Number of places to request
+
+    Returns:
+        Flask test response object
     """
 
     def _make_booking(competition, club, places):
