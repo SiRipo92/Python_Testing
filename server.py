@@ -53,7 +53,17 @@ def purchase_places():
         flash('Something went wrong - please try again.')
         return render_template('welcome.html', club=club, competitions=competitions), 200
 
+    points_before = int(club['points'])
+
     places_required = int(request.form['places'])
+
+    if places_required > points_before:
+        flash("Insufficient points.")
+        return render_template(
+            'booking.html',
+            competition=competition,
+            club=club
+        ), 200
 
     competition['numberOfPlaces'] = int(competition['numberOfPlaces']) - places_required
 

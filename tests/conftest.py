@@ -88,3 +88,25 @@ def mock_client(client, mock_clubs, mock_competitions, monkeypatch):
     monkeypatch.setattr(server, 'clubs', mock_clubs)
     monkeypatch.setattr(server, 'competitions', mock_competitions)
     yield client
+
+@pytest.fixture
+def make_booking(mock_client):
+    """
+    Helper fixture to submit booking requests in tests.
+
+    DRY - (scalablility in testing)
+    Returns a callable so tests can easily perform bookings
+    with different parameters without repeating request code.
+    """
+
+    def _make_booking(competition, club, places):
+        return mock_client.post(
+            "/purchasePlaces",
+            data={
+                "competition": competition,
+                "club": club,
+                "places": str(places),
+            },
+        )
+
+    return _make_booking
