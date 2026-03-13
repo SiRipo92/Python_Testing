@@ -81,9 +81,21 @@ class TestPurchasePlaces:
     # EDGE CASES
     # -----------------
 
-    # def test_places_value_remains_integer_after_deduction(self, mock_client):
-        # """
-        # After deduction, numberOfPlaces should be stored
-        # as an integer to maintain type consistency across bookings.
-        # """
-        # pass
+    def test_places_value_remains_integer_after_deduction(self, mock_client):
+        """
+        After deduction, numberOfPlaces should be stored
+        as an integer to maintain type consistency across bookings.
+        """
+        mock_client.post("/purchasePlaces", data={
+            'competition': 'Future Festival',
+            'club': 'Simply Lift',
+            'places': '3',
+        })
+        competition = next(
+            (c for c in server.competitions if c['name'] == 'Future Festival'), None
+        )
+
+        # Verify type consistency — numberOfPlaces must be int after deduction,
+        # not a string as it was originally stored in the JSON file
+        assert isinstance(competition['numberOfPlaces'], int)
+        assert competition['numberOfPlaces'] == 22
