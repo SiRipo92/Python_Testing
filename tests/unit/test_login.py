@@ -8,6 +8,10 @@ class TestLogin:
     Branch: fix/login-unknown-email-crash
     """
 
+    # -----------------
+    # SAD PATH
+    # -----------------
+
     @pytest.mark.parametrize("email", [
         "unknown@notfound.com",
         "",
