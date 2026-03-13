@@ -90,3 +90,35 @@ class TestPurchasePlaces:
         # not a string as it was originally stored in the JSON file
         assert isinstance(competition['numberOfPlaces'], int)
         assert competition['numberOfPlaces'] == 22
+
+
+class TestClubPoints:
+    """
+    Unit tests for club point deduction in purchasePlaces().
+
+    Issue #8: Club point balance is not updated after booking.
+    Branch: fix/club-points-not-deducted
+
+    Verifies that points are correctly deducted from the club's
+    balance after a successful booking and reflected in the UI.
+    """
+
+    # -----------------
+    # HAPPY PATH
+    # -----------------
+
+    def test_booking_deducts_points_from_club(self, mock_client):
+        """
+        After a valid booking, the club's points balance
+        should be reduced by the number of places reserved.
+        Simply Lift starts with 13 points, books 3 places — expects 10.
+        """
+        mock_client.post('/purchasePlaces', data={
+            'competition': 'Future Festival',
+            'club': 'Simply Lift',
+            'places': '3'
+        })
+        club = next(
+            (c for c in server.clubs if c['name'] == 'Simply Lift'), None
+        )
+        assert int(club['points']) == 10
