@@ -198,3 +198,17 @@ class TestBookRoute:
 
         assert response.status_code == 200
         assert b"Future Classic" in response.data
+
+    # -----------------
+    # SAD PATH
+    # -----------------
+    @pytest.mark.parametrize("competition", ["Past Festival", "Past Classic"])
+    def test_booking_past_competition_redirects(self, mock_client, competition):
+        """
+        SAD PATH: Accessing the booking page for a past competition
+        should redirect with an error message, not load the booking form.
+        Past Festival and Past Classic have dates in 2020 — both in the past.
+        """
+        response = mock_client.get(f"/book/{competition.replace(' ', '%20')}/Simply%20Lift", follow_redirects=True)
+        assert response.status_code == 200
+        assert b"This competition has already taken place." in response.data
