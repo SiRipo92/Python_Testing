@@ -1,4 +1,6 @@
 import pytest
+from flask import render_template
+
 import server
 
 
@@ -168,3 +170,31 @@ class TestPurchaseValidation:
         response = make_booking("Almost Full Competition", "Simply Lift", places_requested)
         assert response.status_code == 200
         assert b"Not enough places available." in response.data
+
+
+class TestBookRoute:
+    """
+    Unit tests for the /book/<competition>/<club> route.
+
+    Issue #7: Secretaries can book places in past competitions.
+    Branch: fix/booking-past-competitions
+
+    Verifies that:
+    - Past competitions redirect with error message
+    - Future competitions load the booking page correctly
+    - Unknown club or competition handled gracefully (fixes [0] indexing)
+    """
+
+    # -----------------
+    # HAPPY PATH
+    # -----------------
+
+    def test_booking_future_competition_returns_200(self, mock_client):
+        """
+        Accessing a future competition's booking page
+        should return 200 and render the booking form.
+        """
+        response = mock_client.get("/book/Future%20Classic/She%20Lifts")
+
+        assert response.status_code == 200
+        assert b"Future Classic" in response.data
