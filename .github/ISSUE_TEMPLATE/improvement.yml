@@ -18,6 +18,20 @@ body:
     validations:
       required: true
   - type: textarea
+    id: relevant_code
+    attributes:
+      label: Relevant code / file
+      description: Which function or file needs changing?
+    validations:
+      required: false
+  - type: input
+    id: branch
+    attributes:
+      label: Branch name
+      placeholder: improvement/descriptive-name
+    validations:
+      required: false
+  - type: textarea
     id: notes
     attributes:
       label: Notes
