@@ -103,3 +103,11 @@ class TestFunctionalUserJourney:
         places_input.submit()
         time.sleep(1)
         assert "Great-booking complete!" in driver.page_source
+
+    def test_points_board_loads_without_login(self, app_server, driver):
+        """
+        Points board is publicly accessible without login.
+        Shows club names and points
+        """
+        driver.get(BASE_URL + "/pointsBoard")
+        assert "Simply Lift" in driver.page_source
