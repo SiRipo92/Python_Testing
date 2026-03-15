@@ -8,5 +8,22 @@
 <h1>Welcome to the Points Board.</h1>
 <p>Find your club and the points available by club here.</p>
 
+<table>
+    <thead>
+        <tr>
+            <th>Club Name</th>
+            <th>Points</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for club in clubs %}
+        <tr>
+            <td>{{ club['name'] }}</td>
+            <td>{{ club['points'] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
 </body>
 </html>
