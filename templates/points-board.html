@@ -8,6 +8,7 @@
 <h1>Welcome to the Points Board.</h1>
 <p>Find your club and the points available by club here.</p>
 
+{% if clubs %}
 <table>
     <thead>
         <tr>
@@ -24,6 +25,9 @@
         {% endfor %}
     </tbody>
 </table>
+{% else %}
+    <p>No clubs registered.</p>
+{% endif %}
 
 </body>
 </html>
