@@ -41,6 +41,15 @@ class TestPointsBoard:
         response = mock_client.get('/pointsBoard')
         assert b"john@simplylift.co" not in response.data
 
+    def test_index_contains_points_board_link(self, mock_client):
+        """
+        The points board link must be accessible from the homepage
+        without logging in.
+        """
+        response = mock_client.get('/')
+        assert response.status_code == 200
+        assert b'/pointsBoard' in response.data
+
     # -----------------
     # SAD PATH
     # -----------------
