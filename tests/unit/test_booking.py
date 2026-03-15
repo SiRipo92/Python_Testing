@@ -1,5 +1,4 @@
 import pytest
-from flask import render_template
 
 import server
 
@@ -202,13 +201,36 @@ class TestBookRoute:
     # -----------------
     # SAD PATH
     # -----------------
+
     @pytest.mark.parametrize("competition", ["Past Festival", "Past Classic"])
     def test_booking_past_competition_redirects(self, mock_client, competition):
         """
-        SAD PATH: Accessing the booking page for a past competition
+        Accessing the booking page for a past competition
         should redirect with an error message, not load the booking form.
         Past Festival and Past Classic have dates in 2020 — both in the past.
         """
         response = mock_client.get(f"/book/{competition.replace(' ', '%20')}/Simply%20Lift", follow_redirects=True)
         assert response.status_code == 200
         assert b"This competition has already taken place." in response.data
+
+    # Tests both unknown possibilities for club and competition in a tuple
+    @pytest.mark.parametrize("competition, club", [
+        ("Unknown Competition", "Simply Lift"),
+        ("Future Classic", "Unknown Club"),
+    ])
+    def test_booking_unknown_data_returns_error(self, mock_client, competition, club):
+        """
+        Unknown competition or club name should not crash the app.
+        Both cases should return an error message gracefully.
+
+        In normal flow this shouldn't happen — club name comes from the URL
+        built by welcome.html after successful login. Edge case: manually
+        crafted URL. Falls back to index because club context cannot be
+        recovered in a stateless app without sessions.
+        """
+        response = mock_client.get(
+            f"/book/{competition.replace(' ', '%20')}/{club.replace(' ', '%20')}",
+            follow_redirects=True
+        )
+        assert response.status_code == 200
+        assert b"Something went wrong - please try again" in response.data
