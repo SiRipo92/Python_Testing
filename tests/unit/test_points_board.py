@@ -34,3 +34,10 @@ class TestPointsBoard():
         response = mock_client.get('/pointsBoard')
         assert b"Simply Lift" in response.data
         assert b"13" in response.data
+
+    def test_points_board_does_not_display_emails(self, mock_client):
+        """
+        Verifies that the email data inside clubs is not exposed in table
+        """
+        response = mock_client.get('/pointsBoard')
+        assert b"john@simplylift.co" not in response.data
