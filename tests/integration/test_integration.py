@@ -1,5 +1,8 @@
 import pytest
 import server
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 # --- Fixture needed for integration tests  ---
@@ -27,13 +30,21 @@ class TestUserJourney:
         - Points board reflects updated balance after logout
         """
 
-        # Step 1 — check points board BEFORE booking
+        CLUB = 'Simply Lift'
+        COMPETITION = 'Future Festival'
+        PLACES_TO_BOOK = 3
+        POINTS_START = 13
+        PLACES_START = 25
+
+        logger.info("=" * 40)
+        logger.info("TESTING: full user journey with point and reservation deductions")
+        logger.info(f"START: {CLUB} points={POINTS_START}, {COMPETITION} places={PLACES_START}")
+
+        # Step 1 — points board BEFORE booking
         response = mock_client.get('/pointsBoard')
         assert response.status_code == 200
         assert b'Simply Lift' in response.data
         assert b'13' in response.data
-        points_before = 13
-        print(f"\n→ Points before booking: {points_before}")
 
         # Step 2 — login
         response = mock_client.post('/showSummary', data={
@@ -47,28 +58,26 @@ class TestUserJourney:
         assert response.status_code == 200
         assert b'Future Festival' in response.data
 
-        # Step 4 — purchase 3 places
-        places_booked = 3
-        response = make_booking('Future Festival', 'Simply Lift', places_booked)
+        # Step 4 — purchase places
+        response = make_booking(COMPETITION, CLUB, PLACES_TO_BOOK)
         assert response.status_code == 200
         assert b'Great-booking complete!' in response.data
 
-        # Check changes in points
-        expected_points = points_before - places_booked  # 13 - 3 = 10
-        assert f'{expected_points}'.encode() in response.data
-        print(f"→ Expected points after: {expected_points}")
+        expected_points = POINTS_START - PLACES_TO_BOOK  # 13 - 3 = 10
+        expected_places = PLACES_START - PLACES_TO_BOOK  # 25 - 3 = 22
 
-        # Check competition places reduced in response
-        assert b'22' in response.data  # 25 - 3 = 22
+        assert f'{expected_points}'.encode() in response.data
+        assert f'{expected_places}'.encode() in response.data
+        logger.info(f"AFTER PURCHASE: {CLUB} points={expected_points}, {COMPETITION} places={expected_places}")
 
         # Step 5 — logout
         response = mock_client.get('/logout', follow_redirects=True)
         assert response.status_code == 200
 
-        # Step 6 — check points board AFTER booking
-        # Points board must reflect the same deduction seen in step 4
+        # Step 6 — points board AFTER booking
         response = mock_client.get('/pointsBoard')
         assert b'Simply Lift' in response.data
         assert f'{expected_points}'.encode() in response.data
-        assert b'13' not in response.data  # old value must be gone
-        print(f"→ Points board response contains '10': {b'10' in response.data}")
+        assert b'13' not in response.data
+        logger.info(f"POINTS BOARD CONFIRMS: {CLUB} = {expected_points} points ✓")
+        logger.info("=" * 40)
