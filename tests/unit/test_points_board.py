@@ -26,3 +26,11 @@ class TestPointsBoard():
         """
         response = mock_client.get('/pointsBoard')
         assert response.status_code == 200
+
+    def test_points_board_displays_club_names_and_points(self, mock_client):
+        """
+        Points board must show each club's name and points balance.
+        """
+        response = mock_client.get('/pointsBoard')
+        assert b"Simply Lift" in response.data
+        assert b"13" in response.data
