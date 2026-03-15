@@ -111,3 +111,39 @@ class TestFunctionalUserJourney:
         """
         driver.get(BASE_URL + "/pointsBoard")
         assert "Simply Lift" in driver.page_source
+
+    # -----------------
+    # SAD PATH
+    # -----------------
+
+    def test_unknown_email_shows_error(self, app_server, driver):
+        """
+        Instead of crashing site, we want to see a message on index
+        if the email is not in database/not found.
+        """
+        driver.get(BASE_URL + "/")
+        email_input = driver.find_element(By.NAME, "email")
+        email_input.clear()
+        email_input.send_keys("unknownemail@email.com")
+        email_input.submit()
+        time.sleep(1)
+        assert "Sorry, that email was not found." in driver.page_source
+
+    def test_booking_attempt_insufficient_points(self, app_server, driver):
+        """
+        Club with insufficient points cannot book more
+        places than they have points available.
+        Iron Temple has 4 points — attempts to book 5.
+        """
+        self.login(driver, email="admin@irontemple.com")
+        # click Book Places for first available competition
+        book_link = driver.find_element(By.LINK_TEXT, "Book Places")
+        book_link.click()
+        time.sleep(1)
+        # input more places reservations than points in form
+        places_input = driver.find_element(By.NAME, "places")
+        places_input.clear()
+        places_input.send_keys("5")
+        places_input.submit()
+        time.sleep(1)
+        assert "Insufficient points." in driver.page_source
