@@ -31,7 +31,12 @@ def show_summary():
     if not club:
         flash("Sorry, that email was not found.")
         return render_template('index.html'), 200
-    return render_template('welcome.html', club=club, competitions=competitions, now=datetime.now())
+    return render_template(
+        'welcome.html',
+        club=club,
+        competitions=competitions,
+        now=datetime.now()
+    )
 
 
 @app.route('/book/<competition>/<club>')
@@ -47,7 +52,12 @@ def book(competition, club):
     competition_date = datetime.strptime(found_competition['date'], "%Y-%m-%d %H:%M:%S")
     if competition_date < datetime.now():
         flash("This competition has already taken place.")
-        return render_template('welcome.html', club=found_club, competitions=competitions)
+        return render_template(
+            'welcome.html',
+            club=found_club,
+            competitions=competitions,
+            now=datetime.now()
+        )
 
     return render_template('booking.html', club=found_club, competition=found_competition)
 
@@ -59,7 +69,12 @@ def purchase_places():
 
     if not competition or not club:
         flash('Something went wrong - please try again.')
-        return render_template('welcome.html', club=club, competitions=competitions), 200
+        return render_template(
+            'welcome.html',
+            club=club,
+            competitions=competitions,
+            now=datetime.now()
+        ), 200
 
     points_before = int(club['points'])
 
@@ -98,7 +113,12 @@ def purchase_places():
     )
 
     flash('Great-booking complete!')
-    return render_template('welcome.html', club=club, competitions=competitions)
+    return render_template(
+        'welcome.html',
+        club=club,
+        competitions=competitions,
+        now=datetime.now()
+    )
 
 
 # TODO: Add route for points display
