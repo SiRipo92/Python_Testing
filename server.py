@@ -123,7 +123,7 @@ def purchase_places():
 
 @app.route('/pointsBoard')
 def show_points_board():
-    return render_template('points-board.html')
+    return render_template('points-board.html', clubs=clubs)
 
 
 @app.route('/logout')
