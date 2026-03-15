@@ -52,12 +52,30 @@ class TestFunctionalUserJourney:
     - Headless Chrome browser (driver fixture)
     """
 
+    # -----------------
+    # HAPPY PATH
+    # -----------------
+
     def test_index_page_loads(self, app_server, driver):
         """
         Homepage loads and displays the login form.
         Verifies the server is running and the index route works.
         """
-        driver.get(BASE_URL+"/")
+        driver.get(BASE_URL + "/")
         assert "GUDLFT" in driver.title or "Registration" in driver.title
         email_input = driver.find_element(By.NAME, "email")
         assert email_input is not None
+
+    def test_valid_login_loads_summary(self, app_server, driver):
+        """
+        Valid email submission redirects to welcome page
+        showing club name and available points.
+        """
+        driver.get(BASE_URL + "/")
+        email_input = driver.find_element(By.NAME, "email")
+        email_input.clear()
+        email_input.send_keys("john@simplylift.co")
+        email_input.submit()
+        time.sleep(1)
+        assert "Welcome" in driver.page_source
+        assert "john@simplylift.co" in driver.page_source
