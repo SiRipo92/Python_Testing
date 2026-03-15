@@ -31,7 +31,7 @@ def show_summary():
     if not club:
         flash("Sorry, that email was not found.")
         return render_template('index.html'), 200
-    return render_template('welcome.html', club=club, competitions=competitions)
+    return render_template('welcome.html', club=club, competitions=competitions, now=datetime.now())
 
 
 @app.route('/book/<competition>/<club>')
