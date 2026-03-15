@@ -86,3 +86,20 @@ class TestFunctionalUserJourney:
         self.login(driver)
         assert "Welcome" in driver.page_source
         assert "john@simplylift.co" in driver.page_source
+
+    def test_booking_flow(self, app_server, driver):
+        """
+        Login -> click 'Book Places' -> Submit booking -> confirmation message
+        """
+        self.login(driver)
+        # click Book Places for first available competition
+        book_link = driver.find_element(By.LINK_TEXT, "Book Places")
+        book_link.click()
+        time.sleep(1)
+        # fill in form with number of places to book
+        places_input = driver.find_element(By.NAME, "places")
+        places_input.clear()
+        places_input.send_keys("2")
+        places_input.submit()
+        time.sleep(1)
+        assert "Great-booking complete!" in driver.page_source
