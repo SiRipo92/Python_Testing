@@ -1,7 +1,7 @@
-name: Bug Report
-description: Report a bug or unexpected behavior
-title: "BUG: "
-labels: ["bug"]
+yamlname: Feature Request
+description: Request a new feature or functionality
+title: "FEATURE: "
+labels: ["enhancement"]
 body:
   - type: textarea
     id: given
@@ -21,7 +21,7 @@ body:
     id: then
     attributes:
       label: Then (actual behavior)
-      description: What actually happens?
+      description: What currently happens or doesn't exist?
     validations:
       required: true
   - type: textarea
