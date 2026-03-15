@@ -3,8 +3,12 @@ include/
 lib/
 .Python
 
+
+# Hide test reports
+tests/reports/*
+
 __pycache__/
 *.pyc
 .coverage
-htmlcov/
+tests/reports/htmlcov/
 venv/
