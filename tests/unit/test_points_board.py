@@ -1,8 +1,7 @@
-import pytest
 import server
 
 
-class TestPointsBoard():
+class TestPointsBoard:
     """
     Unit tests for the /points-board route.
 
@@ -41,3 +40,17 @@ class TestPointsBoard():
         """
         response = mock_client.get('/pointsBoard')
         assert b"john@simplylift.co" not in response.data
+
+    # -----------------
+    # SAD PATH
+    # -----------------
+
+    def test_points_board_displays_message_when_no_clubs(self, mock_client, monkeypatch):
+        """
+        Edge case: If clubs list is empty, page should still load
+        without crashing and show an appropriate message.
+        """
+        monkeypatch.setattr(server, 'clubs', [])
+        response = mock_client.get('/pointsBoard')
+        assert response.status_code == 200
+        assert b"No clubs registered." in response.data
