@@ -1,0 +1,26 @@
+name: Improvement / Tech Debt
+description: Code quality, refactoring, or technical debt
+title: "IMPROVEMENT: "
+labels: ["improvement"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What needs improving and why?
+    validations:
+      required: true
+  - type: textarea
+    id: changes
+    attributes:
+      label: Proposed changes
+      description: What specifically should change?
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Any additional context
+    validations:
+      required: false
