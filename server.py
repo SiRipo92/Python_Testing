@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 from flask import Flask,render_template,request,redirect,flash,url_for
 
@@ -30,18 +31,35 @@ def show_summary():
     if not club:
         flash("Sorry, that email was not found.")
         return render_template('index.html'), 200
-    return render_template('welcome.html', club=club, competitions=competitions)
+    return render_template(
+        'welcome.html',
+        club=club,
+        competitions=competitions,
+        now=datetime.now()
+    )
 
 
 @app.route('/book/<competition>/<club>')
-def book(competition,club):
-    foundClub = [c for c in clubs if c['name'] == club][0]
-    foundCompetition = [c for c in competitions if c['name'] == competition][0]
-    if foundClub and foundCompetition:
-        return render_template('booking.html',club=foundClub,competition=foundCompetition)
-    else:
-        flash("Something went wrong-please try again")
-        return render_template('welcome.html', club=club, competitions=competitions)
+def book(competition, club):
+    found_club = next((c for c in clubs if c['name'] == club), None)
+    found_competition = next((c for c in competitions if c['name'] == competition), None)
+
+    if not found_club or not found_competition:
+        flash("Something went wrong - please try again.")
+        return render_template('index.html'), 200
+
+    # Check date on competition
+    competition_date = datetime.strptime(found_competition['date'], "%Y-%m-%d %H:%M:%S")
+    if competition_date < datetime.now():
+        flash("This competition has already taken place.")
+        return render_template(
+            'welcome.html',
+            club=found_club,
+            competitions=competitions,
+            now=datetime.now()
+        )
+
+    return render_template('booking.html', club=found_club, competition=found_competition)
 
 
 @app.route('/purchasePlaces', methods=['POST'])
@@ -51,7 +69,12 @@ def purchase_places():
 
     if not competition or not club:
         flash('Something went wrong - please try again.')
-        return render_template('welcome.html', club=club, competitions=competitions), 200
+        return render_template(
+            'welcome.html',
+            club=club,
+            competitions=competitions,
+            now=datetime.now()
+        ), 200
 
     points_before = int(club['points'])
 
@@ -90,7 +113,12 @@ def purchase_places():
     )
 
     flash('Great-booking complete!')
-    return render_template('welcome.html', club=club, competitions=competitions)
+    return render_template(
+        'welcome.html',
+        club=club,
+        competitions=competitions,
+        now=datetime.now()
+    )
 
 
 # TODO: Add route for points display

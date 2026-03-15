@@ -1,4 +1,5 @@
 import pytest
+
 import server
 
 
@@ -168,3 +169,68 @@ class TestPurchaseValidation:
         response = make_booking("Almost Full Competition", "Simply Lift", places_requested)
         assert response.status_code == 200
         assert b"Not enough places available." in response.data
+
+
+class TestBookRoute:
+    """
+    Unit tests for the /book/<competition>/<club> route.
+
+    Issue #7: Secretaries can book places in past competitions.
+    Branch: fix/booking-past-competitions
+
+    Verifies that:
+    - Past competitions redirect with error message
+    - Future competitions load the booking page correctly
+    - Unknown club or competition handled gracefully (fixes [0] indexing)
+    """
+
+    # -----------------
+    # HAPPY PATH
+    # -----------------
+
+    def test_booking_future_competition_returns_200(self, mock_client):
+        """
+        Accessing a future competition's booking page
+        should return 200 and render the booking form.
+        """
+        response = mock_client.get("/book/Future%20Classic/She%20Lifts")
+
+        assert response.status_code == 200
+        assert b"Future Classic" in response.data
+
+    # -----------------
+    # SAD PATH
+    # -----------------
+
+    @pytest.mark.parametrize("competition", ["Past Festival", "Past Classic"])
+    def test_booking_past_competition_redirects(self, mock_client, competition):
+        """
+        Accessing the booking page for a past competition
+        should redirect with an error message, not load the booking form.
+        Past Festival and Past Classic have dates in 2020 — both in the past.
+        """
+        response = mock_client.get(f"/book/{competition.replace(' ', '%20')}/Simply%20Lift", follow_redirects=True)
+        assert response.status_code == 200
+        assert b"This competition has already taken place." in response.data
+
+    # Tests both unknown possibilities for club and competition in a tuple
+    @pytest.mark.parametrize("competition, club", [
+        ("Unknown Competition", "Simply Lift"),
+        ("Future Classic", "Unknown Club"),
+    ])
+    def test_booking_unknown_data_returns_error(self, mock_client, competition, club):
+        """
+        Unknown competition or club name should not crash the app.
+        Both cases should return an error message gracefully.
+
+        In normal flow this shouldn't happen — club name comes from the URL
+        built by welcome.html after successful login. Edge case: manually
+        crafted URL. Falls back to index because club context cannot be
+        recovered in a stateless app without sessions.
+        """
+        response = mock_client.get(
+            f"/book/{competition.replace(' ', '%20')}/{club.replace(' ', '%20')}",
+            follow_redirects=True
+        )
+        assert response.status_code == 200
+        assert b"Something went wrong - please try again" in response.data
