@@ -52,6 +52,18 @@ class TestFunctionalUserJourney:
     - Headless Chrome browser (driver fixture)
     """
 
+    def login(self, driver, email="john@simplylift.co"):
+        """
+        Helper method — navigates to index and logs in with given email.
+        Reusable across any test that requires authentication.
+        """
+        driver.get(BASE_URL + "/")
+        email_input = driver.find_element(By.NAME, "email")
+        email_input.clear()
+        email_input.send_keys(email)
+        email_input.submit()
+        time.sleep(1)
+
     # -----------------
     # HAPPY PATH
     # -----------------
@@ -71,11 +83,6 @@ class TestFunctionalUserJourney:
         Valid email submission redirects to welcome page
         showing club name and available points.
         """
-        driver.get(BASE_URL + "/")
-        email_input = driver.find_element(By.NAME, "email")
-        email_input.clear()
-        email_input.send_keys("john@simplylift.co")
-        email_input.submit()
-        time.sleep(1)
+        self.login(driver)
         assert "Welcome" in driver.page_source
         assert "john@simplylift.co" in driver.page_source
