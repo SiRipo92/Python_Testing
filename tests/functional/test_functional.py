@@ -147,3 +147,21 @@ class TestFunctionalUserJourney:
         places_input.submit()
         time.sleep(1)
         assert "Insufficient points." in driver.page_source
+
+    def test_booking_attempt_more_than_12_places(self, app_server, driver):
+        """
+        Club with more than 12 points cannot book more places than 12.
+        (Default Login) Simply Lift has 13 points -- attempts to book 13
+        """
+        self.login(driver)
+        # click Book Places for first available competition
+        book_link = driver.find_element(By.LINK_TEXT, "Book Places")
+        book_link.click()
+        time.sleep(1)
+        # input more places reservations than points in form
+        places_input = driver.find_element(By.NAME, "places")
+        places_input.clear()
+        places_input.send_keys("13")
+        places_input.submit()
+        time.sleep(1)
+        assert "Cannot book more than 12 places." in driver.page_source
