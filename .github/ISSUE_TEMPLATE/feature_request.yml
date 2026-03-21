@@ -1,0 +1,47 @@
+yamlname: Feature Request
+description: Request a new feature or functionality
+title: "FEATURE: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: given
+    attributes:
+      label: Given
+      description: What is the starting state or context?
+    validations:
+      required: true
+  - type: textarea
+    id: when
+    attributes:
+      label: When
+      description: What action triggers the bug?
+    validations:
+      required: true
+  - type: textarea
+    id: then
+    attributes:
+      label: Then (actual behavior)
+      description: What currently happens or doesn't exist?
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should happen instead?
+    validations:
+      required: true
+  - type: textarea
+    id: relevant_code
+    attributes:
+      label: Relevant code / route
+      description: Which function or route is affected?
+    validations:
+      required: false
+  - type: input
+    id: branch
+    attributes:
+      label: Branch name
+      placeholder: fix/descriptive-name
+    validations:
+      required: false
