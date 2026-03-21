@@ -91,3 +91,27 @@ class GudlftUser(HttpUser):
                 response.failure(f"Unexpected status: {response.status_code}")
             else:
                 response.success()
+
+    @task(1)
+    def purchase_places(self):
+        """
+        Performance requirement: /purchasePlaces must respond in under 2 seconds.
+        Simulates a booking — this is the route that updates club points.
+        """
+        with self.client.post(
+                "/purchasePlaces",
+                data={
+                    "competition": "Competition 0",
+                    "club": "Club 1",
+                    "places": "1"
+                },
+                catch_response=True
+        ) as response:
+            if response.elapsed.total_seconds() > 2:
+                response.failure(
+                    f"Purchase too slow: {response.elapsed.total_seconds():.2f}s"
+                )
+            elif response.status_code != 200:
+                response.failure(f"Unexpected status: {response.status_code}")
+            else:
+                response.success()
