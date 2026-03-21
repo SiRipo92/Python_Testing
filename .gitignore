@@ -11,4 +11,4 @@ __pycache__/
 *.pyc
 .coverage
 tests/reports/htmlcov/
-venv/
+venv/.DS_Store
